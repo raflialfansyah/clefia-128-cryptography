@@ -44,4 +44,18 @@
     </div>
   </div>
 </section>
+
+<section class="card">
+  <h2>Urutan Demonstrasi Akademis</h2>
+  <p class="muted">
+    Panduan alur presentasi langkah demi langkah sesuai rancangan demonstrasi CLEFIA-128-CTR:
+  </p>
+  <ol>
+    <li><strong>Verifikasi Matematis (<a href="/math">Matematika CLEFIA</a>):</strong> Tunjukkan vektor uji publik resmi RFC 6114 beserta jejak lengkap 18 putaran <code>GFN<sub>4,18</sub></code> dan pemutihan awal/akhir.</li>
+    <li><strong>Pendaftaran &amp; Penyimpanan Terenkripsi (<a href="/register">Daftar</a>):</strong> Daftarkan akun simulasi pertama, lalu buka <a href="/credentials">Data Terenkripsi</a> untuk menunjukkan bahwa <em>nama pengguna</em> dan <em>kata sandi</em> hanya disimpan sebagai ciphertext CLEFIA-128-CTR dengan nonce acak 12-byte yang berbeda.</li>
+    <li><strong>Login Pemindaian Dekripsi (<a href="/login">Masuk</a>):</strong> Keluar lalu masuk kembali (termasuk variasi huruf kapital pada nama pengguna) untuk menjelaskan pendekatan linear <em>decrypt-and-scan</em> tanpa <em>blind index</em> atau hash kata sandi.</li>
+    <li><strong>Catatan Profil &amp; Isolasi Pemilik (<a href="/profile">Catatan Profil</a>):</strong> Simpan catatan berbahasa Indonesia lebih dari 16 byte (multi-blok CTR), perbarui kata sandi melalui <a href="/change-password">Ubah Kata Sandi</a> untuk melihat nonce baru, lalu uji bahwa kata sandi salah ditolak dan akun simulasi kedua tidak dapat membaca catatan akun pertama.</li>
+    <li><strong>Hasil Eksperimen &amp; Keterbatasan (<a href="/experiments">Eksperimen</a>):</strong> Tampilkan grafik Efek Avalanche, SAC, dan benchmark berlabel Bahasa Indonesia, serta jelaskan batasan mode CTR tanpa pemeriksaan integritas MAC, penyimpanan kata sandi yang reversibel, dan kompleksitas pemindaian O(n).</li>
+  </ol>
+</section>
 {% endblock %}

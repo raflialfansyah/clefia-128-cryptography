@@ -150,15 +150,14 @@ def _build_rfc_math_sample() -> dict[str, Any]:
     ks = key_schedule_128(key)
     trace = trace_encrypt_block(key, pt)
 
-    selected_indices = (0, 1, 8, 17)
-    selected_rounds = [
+    rounds = [
         {
-            "round_number": trace.rounds[i].round_number,
-            "input_hex": " ".join(f"{w:08x}" for w in trace.rounds[i].input_words),
-            "rk_hex": f"{trace.rounds[i].rk_even:08x} / {trace.rounds[i].rk_odd:08x}",
-            "f_out_hex": f"{trace.rounds[i].f0_out:08x} / {trace.rounds[i].f1_out:08x}",
+            "round_number": rt.round_number,
+            "input_hex": " ".join(f"{w:08x}" for w in rt.input_words),
+            "rk_hex": f"{rt.rk_even:08x} / {rt.rk_odd:08x}",
+            "f_out_hex": f"{rt.f0_out:08x} / {rt.f1_out:08x}",
         }
-        for i in selected_indices
+        for rt in trace.rounds
     ]
 
     return {
@@ -166,12 +165,18 @@ def _build_rfc_math_sample() -> dict[str, Any]:
         "plaintext_hex": _RFC_SAMPLE_PLAINTEXT_HEX,
         "intermediate_l_hex": inter_l.hex(),
         "wk_hex": " ".join(f"{w:08x}" for w in ks.whitening_keys),
+        "after_initial_whitening_hex": " ".join(
+            f"{w:08x}" for w in trace.after_initial_whitening
+        ),
+        "before_final_whitening_hex": " ".join(
+            f"{w:08x}" for w in trace.before_final_whitening
+        ),
         "rk_first_hex": " ".join(f"{w:08x}" for w in ks.round_keys[:4]),
         "rk_last_hex": " ".join(f"{w:08x}" for w in ks.round_keys[32:36]),
         "ciphertext_hex": trace.ciphertext.hex(),
         "expected_ciphertext_hex": _RFC_SAMPLE_EXPECTED_CT_HEX,
         "matches": trace.ciphertext.hex() == _RFC_SAMPLE_EXPECTED_CT_HEX,
-        "selected_rounds": selected_rounds,
+        "rounds": rounds,
     }
 
 

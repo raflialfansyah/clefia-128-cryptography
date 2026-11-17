@@ -283,7 +283,11 @@ def test_t007_approach_a_decrypt_and_scan_login(
             .order_by(EncryptedFieldRow.updated_at.asc(), EncryptedFieldRow.id.asc())
         )
         assert u1_row is not None
-        u1_row.ciphertext = crypto.encrypt_bytes(b"\xff\xfe\xfd").ciphertext
+        orig_updated_at = u1_row.updated_at
+        bad_username = crypto.encrypt_bytes(b"\xff\xfe\xfd")
+        u1_row.nonce = bad_username.nonce
+        u1_row.ciphertext = bad_username.ciphertext
+        u1_row.updated_at = orig_updated_at
         db.commit()
         assert (
             authenticate_user(db, crypto, username="pengguna_3", password="PassTiga!123").id

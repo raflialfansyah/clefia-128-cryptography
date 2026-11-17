@@ -29,6 +29,7 @@
 
     <h2 style="margin-top: 1.25rem;">Metadata Penyimpanan Basis Data (Non-Rahasia)</h2>
     <p class="muted">Kunci enkripsi server tidak pernah ditampilkan atau dikirimkan ke klien.</p>
+    <div class="table-scroll">
     <table>
       <tbody>
         <tr><th>Bidang Data</th><td><code>{{ profile_view.field_name }}</code></td></tr>
@@ -41,6 +42,7 @@
         <tr><th>Diperbarui (UTC)</th><td><code>{{ profile_view.updated_at }}</code></td></tr>
       </tbody>
     </table>
+    </div>
   {% else %}
     <div class="alert alert-info">
       Status penyimpanan: <strong>Belum tersedia</strong>. Silakan tambahkan catatan profil simulasi di bawah atau melalui <a href="/dashboard">dasbor</a>.

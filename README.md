@@ -184,9 +184,16 @@ Ringkasan hasil bawaan pada `experiments/results/` (`seed = 20261115`, `samples 
 
 ## Daftar Periksa Demonstrasi (Antarmuka Bahasa Indonesia)
 
-1. **Peringatan Akademis & Matematis (`/`, `/math`):** Tunjukkan spanduk peringatan akademis berbahasa Indonesia serta perhitungan langsung vektor uji resmi RFC 6114 (`de2bf2fd9b74aacdf1298555459494fd`) dan `Struktur Jaringan Feistel`.
-2. **Pendaftaran & Penyimpanan Terenkripsi (`/register`, `/credentials`):** Daftarkan akun simulasi (mis. `mhs_demo_01` / `SandiSimulasi!01`), lalu tunjukkan tabel `Data Terenkripsi` yang hanya memperlihatkan ciphertext heksadesimal & nonce 12-byte untuk `Nama pengguna` dan `Kata sandi` (tanpa kata sandi teks biasa).
-3. **Login Pendekatan A (`/login`):** Keluar dan masuk kembali dengan huruf kapital berbeda (mis. `MHS_DEMO_01`) untuk mendemonstrasikan kanonikalisasi `NFKC + strip + casefold` dan pemindaian dekripsi nama pengguna satu per satu.
-4. **Catatan Profil Wajib (`/dashboard`, `/profile`):** Simpan catatan panjang berbahasa Indonesia (> 16 byte), lihat hasil dekripsi khusus pemilik, dan buktikan pengguna lain tidak dapat membacanya.
-5. **Ubah Kata Sandi (`/change-password`):** Perbarui kata sandi simulasi dan tunjukkan nonce berubah sementara kata sandi lama ditolak.
-6. **Eksperimen & Batasan Mode CTR (`/experiments`):** Tunjukkan grafik Efek Avalanche, SAC, dan Waktu Eksekusi berlabel Bahasa Indonesia, serta jelaskan keterbatasan mode CTR tanpa MAC, kata sandi reversibel, dan kompleksitas pemindaian O(n).
+Contoh akun **khusus simulasi** untuk demonstrasi (jangan pernah memakai kata sandi asli):
+- Akun simulasi 1: `mhs_demo_01` / `SandiSimulasi!01`
+- Akun simulasi 2 (uji isolasi pemilik): `mhs_demo_02` / `SandiSimulasi!02`
+
+Urutan presentasi yang disarankan:
+1. **Peringatan Akademis (`/`)**: Tunjukkan spanduk peringatan akademis dan disclaimer mode CTR tanpa autentikasi yang tampil konsisten di seluruh halaman.
+2. **Matematika & 18 Putaran (`/math`)**: Tunjukkan perhitungan langsung vektor uji resmi RFC 6114 (`de2bf2fd9b74aacdf1298555459494fd`), pemutihan awal/akhir, `Struktur Jaringan Feistel`, dan jejak lengkap **18 putaran**.
+3. **Pendaftaran & Penyimpanan Terenkripsi (`/register`, `/credentials`)**: Daftarkan `mhs_demo_01`, lalu buka `Data Terenkripsi` untuk menunjukkan bahwa `Nama pengguna` dan `Kata sandi` tersimpan sebagai ciphertext heksadesimal & nonce 12-byte yang berbeda (tanpa teks kata sandi atau hash).
+4. **Login Pendekatan A (`/login`)**: Keluar lalu masuk kembali dengan variasi huruf kapital (`MHS_DEMO_01`) untuk mendemonstrasikan kanonikalisasi `NFKC + strip + casefold` dan pemindaian dekripsi nama pengguna satu per satu.
+5. **Catatan Profil Wajib (`/dashboard`, `/profile`)**: Simpan catatan panjang berbahasa Indonesia (> 16 byte / multi-blok CTR), lalu tampilkan hasil dekripsi khusus pemilik.
+6. **Penolakan Kredensial Salah, Isolasi Pemilik & Ubah Kata Sandi**: Buktikan login gagal (`Nama pengguna atau kata sandi salah.`) saat sandi salah, daftarkan `mhs_demo_02` untuk menunjukkan akun lain tidak dapat melihat catatan `mhs_demo_01`, serta ubah sandi di `/change-password` untuk menunjukkan nonce baru.
+7. **Eksperimen & Batasan Mode CTR (`/experiments`)**: Tampilkan grafik Efek Avalanche, SAC, dan Waktu Eksekusi berlabel Bahasa Indonesia, lalu jelaskan batasan mode CTR tanpa pemeriksaan integritas MAC, penyimpanan kata sandi reversibel, serta kompleksitas `O(n)`.
+8. **Rangkaian Pengujian & Status Layanan Jarak Jauh**: Jalankan `uv run pytest -v` secara lokal dan laporkan secara jujur mana pemeriksaan lokal vs pemeriksaan PostgreSQL/Vercel langsung yang masih menunggu konfigurasi layanan eksternal.

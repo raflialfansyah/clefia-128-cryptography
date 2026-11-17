@@ -51,7 +51,8 @@ body {
   border-bottom: 1px solid #e6cfa3;
   color: var(--warn);
   font-size: 0.9rem;
-  padding: 0.5rem 1rem;
+  line-height: 1.45;
+  padding: 0.55rem 1rem;
   text-align: center;
 }
 
@@ -240,6 +241,10 @@ pre,
   padding: 0.75rem;
   overflow-x: auto;
   word-break: break-all;
+}
+
+.table-scroll {
+  overflow-x: auto;
 }
 
 table {

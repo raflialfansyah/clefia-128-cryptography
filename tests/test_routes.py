@@ -67,7 +67,14 @@ def test_t014_indonesian_localization_across_pages_and_errors(
             assert 'lang="id"' in resp.text
             assert "Demonstrasi Enkripsi CLEFIA-128" in resp.text
             assert "aplikasi ini hanya untuk demonstrasi akademis" in resp.text.lower()
+            assert (
+                "Enkripsi dalam mode CTR tanpa pemeriksaan autentikasi tidak dapat "
+                "menjamin bahwa data terenkripsi tidak diubah." in resp.text
+            )
             assert "csrf_token" in resp.text or path in {"/", "/math", "/experiments"}
+
+        home_html = client.get("/").text
+        assert "Urutan Demonstrasi Akademis" in home_html
 
         reg_html = client.get("/register").text
         for phrase in (
@@ -89,9 +96,17 @@ def test_t014_indonesian_localization_across_pages_and_errors(
             "Perkalian pada GF(2",
             "Penjadwalan Kunci",
             "Putaran Enkripsi",
+            "Jejak Lengkap 18 Putaran Enkripsi",
+            "00010203 fbebdbcb 08090a0b b7a79787",
+            "de2bf2fd ec12ff89 f1298555 76b685fd",
+            "547a3193 / abf12070",
+            "e6d6501e / 6d5839b4",
+            "ac7738f2 / 12d0c82d",
             "de2bf2fd9b74aacdf1298555459494fd",
         ):
             assert phrase in math_html
+        for round_num in range(1, 19):
+            assert f"<td>{round_num}</td>" in math_html
 
         exp_html = client.get("/experiments").text
         for phrase in (
@@ -438,8 +453,9 @@ def test_t011_mandatory_profile_note_route_isolation_and_bad_utf8(
                 )
             )
             assert note_row is not None
-            bad_ct = app.state.record_crypto.encrypt_bytes(b"\xff\xfe").ciphertext
-            note_row.ciphertext = bad_ct
+            bad = app.state.record_crypto.encrypt_bytes(b"\xff\xfe")
+            note_row.nonce = bad.nonce
+            note_row.ciphertext = bad.ciphertext
             db.commit()
 
         corrupt_resp = client_alice.get("/profile")
