@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Catatan Profil &mdash; Demonstrasi Enkripsi CLEFIA-128{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>Catatan Profil</h1>
+  <p>Pemilik terautentikasi: <strong>{{ current_user.username }}</strong> (<code>{{ current_user.id }}</code>)</p>
+
+  <div class="alert alert-info" role="note">
+    Enkripsi catatan menggunakan <strong>CLEFIA-128 mode CTR</strong> tanpa pemeriksaan integritas MAC/HMAC, sehingga perubahan ciphertext pada basis data tidak dijamin dapat dideteksi.
+  </div>
+
+  {% if saved %}
+    <div class="alert alert-success" role="status">
+      Catatan berhasil disimpan dalam bentuk terenkripsi.
+    </div>
+  {% endif %}
+  {% if error %}
+    <div class="alert alert-error" role="alert">{{ error }}</div>
+  {% endif %}
+
+  {% if decode_error %}
+    <div class="alert alert-error" role="alert">
+      <strong>Gagal Mendekode Catatan:</strong> {{ decode_error }}
+    </div>
+  {% elif profile_view %}
+    <h2>Hasil Dekripsi Catatan Pemilik</h2>
+    <p class="muted">Didekripsi khusus untuk pemilik sesi menggunakan kunci CLEFIA-128-CTR server.</p>
+    <div class="code-block" data-testid="decrypted-note">{{ profile_view.plaintext_note }}</div>
+
+    <h2 style="margin-top: 1.25rem;">Metadata Penyimpanan Basis Data (Non-Rahasia)</h2>
+    <p class="muted">Kunci enkripsi server tidak pernah ditampilkan atau dikirimkan ke klien.</p>
+    <table>
+      <tbody>
+        <tr><th>Bidang Data</th><td><code>{{ profile_view.field_name }}</code></td></tr>
+        <tr><th>Algoritma &amp; Mode</th><td><code>CLEFIA-128 CTR (versi {{ profile_view.algorithm_version }})</code></td></tr>
+        <tr><th>ID Kunci</th><td><code>{{ profile_view.key_id }}</code></td></tr>
+        <tr><th>Nonce (heksadesimal, 12 byte)</th><td class="mono">{{ profile_view.nonce_hex }}</td></tr>
+        <tr><th>Ciphertext (heksadesimal)</th><td class="mono" style="word-break: break-all;">{{ profile_view.ciphertext_hex or '(kosong)' }}</td></tr>
+        <tr><th>Ciphertext (Base64)</th><td class="mono" style="word-break: break-all;">{{ profile_view.ciphertext_b64 or '(kosong)' }}</td></tr>
+        <tr><th>Panjang data (byte)</th><td>{{ profile_view.ciphertext_len_bytes }}</td></tr>
+        <tr><th>Diperbarui (UTC)</th><td><code>{{ profile_view.updated_at }}</code></td></tr>
+      </tbody>
+    </table>
+  {% else %}
+    <div class="alert alert-info">
+      Status penyimpanan: <strong>Belum tersedia</strong>. Silakan tambahkan catatan profil simulasi di bawah atau melalui <a href="/dashboard">dasbor</a>.
+    </div>
+  {% endif %}
+</section>
+
+<section class="card">
+  <h2>Perbarui Catatan Profil</h2>
+  <form method="post" action="/profile">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label for="profile_note">Isi catatan</label>
+    <textarea id="profile_note" name="profile_note" rows="4" maxlength="4096" placeholder="Tulis catatan simulasi berbahasa Indonesia...">{{ profile_view.plaintext_note if profile_view else '' }}</textarea>
+    <button type="submit" class="btn">Simpan Catatan</button>
+    <a class="btn btn-secondary" href="/dashboard">Kembali ke Dasbor</a>
+  </form>
+</section>
+{% endblock %}

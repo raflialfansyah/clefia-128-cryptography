@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Demonstrasi Enkripsi CLEFIA-128{% endblock %}</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Langsung ke konten utama</a>
+  <div class="academic-banner" role="note" aria-label="Pemberitahuan demonstrasi akademis">
+    Aplikasi ini hanya untuk demonstrasi akademis. Gunakan nama pengguna dan kata sandi simulasi. Jangan gunakan kredensial asli.
+  </div>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="/">Demonstrasi Enkripsi CLEFIA-128</a>
+      <nav class="nav-links" aria-label="Navigasi utama">
+        <a href="/">Beranda</a>
+        <a href="/math">Matematika CLEFIA</a>
+        <a href="/experiments">Eksperimen</a>
+        {% if current_user %}
+          <a href="/dashboard">Dasbor</a>
+          <a href="/credentials">Data Terenkripsi</a>
+          <a href="/profile">Catatan Profil</a>
+          <a href="/change-password">Ubah Kata Sandi</a>
+          <form class="nav-logout-form" method="post" action="/logout">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button type="submit" class="btn btn-secondary">Keluar ({{ current_user.username }})</button>
+          </form>
+        {% else %}
+          <a href="/register">Daftar</a>
+          <a href="/login">Masuk</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content" class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    Implementasi Python Murni CLEFIA-128 (Spesifikasi Sony v1.0 / RFC 6114) &middot; Mode CLEFIA-128-CTR (tanpa MAC) untuk Demonstrasi Akademis
+  </footer>
+</body>
+</html>

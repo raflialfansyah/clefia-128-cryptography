@@ -1,0 +1,21 @@
+{
+  "generated_at_utc": "2026-11-17T06:26:05.325739+00:00",
+  "seed": 20261115,
+  "samples": 64,
+  "plaintext_flip": {
+    "trials": 8192,
+    "mean_hamming_distance": 63.9376,
+    "mean_avalanche_pct": 49.9513,
+    "std_avalanche_pct": 4.4103,
+    "min_avalanche_pct": 34.375,
+    "max_avalanche_pct": 66.4062
+  },
+  "key_flip": {
+    "trials": 8192,
+    "mean_hamming_distance": 63.8917,
+    "mean_avalanche_pct": 49.9154,
+    "std_avalanche_pct": 4.4133,
+    "min_avalanche_pct": 30.4688,
+    "max_avalanche_pct": 65.625
+  }
+}

@@ -1,0 +1,27 @@
+# Local environments and caches
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local secrets and temporary databases
+.env
+.env.*
+!.env.example
+*.db
+*.sqlite
+*.sqlite3
+
+# Development, planning, and test files not needed at runtime
+.git/
+.github/
+tests/
+plan/
+experiments/.cache/
+*.tmp

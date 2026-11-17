@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Daftar Akun Simulasi &mdash; Demonstrasi Enkripsi CLEFIA-128{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>Daftar Akun Simulasi</h1>
+  <div class="alert alert-info" role="note">
+    <strong>Peringatan Akademis:</strong> Aplikasi ini hanya untuk demonstrasi akademis algoritma CLEFIA-128. Gunakan data simulasi, bukan nama pengguna atau kata sandi asli.
+    Baik nama pengguna maupun kata sandi simulasi dienkripsi dengan CLEFIA-128 mode CTR memakai nonce acak 96-bit yang berbeda.
+  </div>
+
+  {% if error %}
+    <div class="alert alert-error" role="alert">{{ error }}</div>
+  {% endif %}
+
+  <form method="post" action="/register">
+    <input type="hidden" name="csrf_token" value="{{ preauth_csrf_token }}">
+
+    <label for="username">Nama pengguna (3&ndash;64 karakter: huruf, angka, <code>_ . -</code>)</label>
+    <input id="username" name="username" type="text" value="{{ username }}" required autocomplete="username" placeholder="Contoh: mhs_demo_01">
+
+    <label for="password">Kata sandi (8&ndash;128 karakter simulasi)</label>
+    <input id="password" name="password" type="password" required minlength="8" autocomplete="new-password" placeholder="Masukkan kata sandi simulasi">
+
+    <label for="password_confirm">Konfirmasi kata sandi</label>
+    <input id="password_confirm" name="password_confirm" type="password" required minlength="8" autocomplete="new-password" placeholder="Ulangi kata sandi simulasi">
+
+    <button type="submit" class="btn">Buat Akun Simulasi</button>
+  </form>
+
+  <p class="muted">Sudah memiliki akun simulasi? <a href="/login">Masuk di sini</a>.</p>
+</section>
+{% endblock %}

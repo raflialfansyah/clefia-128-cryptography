@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Dasbor &mdash; Demonstrasi Enkripsi CLEFIA-128{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>Dasbor</h1>
+  <p>Masuk sebagai <strong>{{ current_user.username }}</strong> (ID akun: <code>{{ current_user.id }}</code>).</p>
+
+  {% if saved %}
+    <div class="alert alert-success" role="status">
+      Catatan berhasil disimpan dalam bentuk terenkripsi.
+    </div>
+  {% endif %}
+  {% if error %}
+    <div class="alert alert-error" role="alert">{{ error }}</div>
+  {% endif %}
+
+  <div class="alert alert-info" role="note">
+    <strong>Ringkasan Status Enkripsi CLEFIA-128-CTR (tanpa MAC):</strong>
+    <ul>
+      <li>Nama pengguna: <strong>{{ "Terenkripsi" if has_username else "Belum tersedia" }}</strong></li>
+      <li>Kata sandi: <strong>{{ "Terenkripsi" if has_password else "Belum tersedia" }}</strong></li>
+      <li>Catatan Profil: <strong>{{ "Terenkripsi" if has_record else "Belum tersedia" }}</strong>
+        {% if has_record %} (kunci <code>{{ record_key_id }}</code>, versi <code>{{ record_version }}</code>, diperbarui <code>{{ record_updated_at }}</code>){% endif %}
+      </li>
+    </ul>
+    <p style="margin-bottom: 0;">
+      <a href="/credentials">Lihat Data Terenkripsi (Ciphertext &amp; Nonce) &rarr;</a>
+      &middot;
+      <a href="/change-password">Ubah Kata Sandi Simulasi &rarr;</a>
+    </p>
+  </div>
+
+  <div class="alert alert-error" role="note">
+    <strong>Catatan Keamanan Mode CTR:</strong> Enkripsi dalam mode CTR tanpa pemeriksaan autentikasi tidak dapat menjamin bahwa data terenkripsi tidak diubah. Aplikasi ini hanya untuk demonstrasi akademis.
+  </div>
+</section>
+
+<section class="card">
+  <h2>Catatan Profil</h2>
+  <p class="muted">
+    Server membangkitkan nonce acak 96-bit yang baru setiap kali Anda menyimpan, lalu mengenkripsi teks UTF-8 dengan CLEFIA-128-CTR sebelum menyimpannya ke basis data.
+  </p>
+  <form method="post" action="/profile">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label for="profile_note">Isi catatan</label>
+    <textarea id="profile_note" name="profile_note" rows="4" maxlength="4096" placeholder="Masukkan catatan simulasi berbahasa Indonesia (tanpa data pribadi asli)...">{{ current_plaintext or '' }}</textarea>
+    <button type="submit" class="btn">Simpan Catatan</button>
+    <a class="btn btn-secondary" href="/profile">Lihat Hasil Dekripsi</a>
+  </form>
+</section>
+{% endblock %}

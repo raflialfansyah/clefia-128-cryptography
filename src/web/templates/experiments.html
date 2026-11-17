@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}Eksperimen &mdash; Demonstrasi Enkripsi CLEFIA-128{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>Eksperimen Efek Avalanche, SAC &amp; Waktu Eksekusi</h1>
+  <p>
+    Seluruh pengukuran dijalankan secara luring (<em>offline</em>) langsung pada primitif blok <strong>CLEFIA-128</strong> murni Python
+    dengan seed deterministik dan metadata CSV/JSON tersimpan, sehingga tidak membebani permintaan HTTP.
+  </p>
+  <p class="muted">
+    Catatan ilmiah: rata-rata perubahan Jarak Hamming sekitar ~50% merupakan indikator difusi empiris yang baik,
+    tetapi bukan bukti formal keamanan terhadap kriptanalisis diferensial atau linear.
+  </p>
+</section>
+
+{% if summary %}
+  <div class="grid-2">
+    {% if summary.avalanche_plaintext %}
+    <section class="card">
+      <h2>Efek Avalanche (Perubahan 1 Bit Plaintext)</h2>
+      <table>
+        <tbody>
+          <tr><th>Seed</th><td><code>{{ summary.avalanche_plaintext.seed }}</code></td></tr>
+          <tr><th>Pasangan &times; Posisi Bit</th><td>{{ summary.avalanche_plaintext.pairs }} &times; 128 = {{ summary.avalanche_plaintext.trials }} percobaan</td></tr>
+          <tr><th>Rata-Rata Perubahan Bit (Jarak Hamming)</th><td><strong>{{ summary.avalanche_plaintext.mean_pct }}%</strong> ({{ summary.avalanche_plaintext.mean_bits }} / 128 bit)</td></tr>
+          <tr><th>Simpangan Baku</th><td>{{ summary.avalanche_plaintext.std_pct }}%</td></tr>
+          <tr><th>Minimum / Maksimum</th><td>{{ summary.avalanche_plaintext.min_pct }}% / {{ summary.avalanche_plaintext.max_pct }}%</td></tr>
+        </tbody>
+      </table>
+    </section>
+    {% endif %}
+
+    {% if summary.avalanche_key %}
+    <section class="card">
+      <h2>Efek Avalanche (Perubahan 1 Bit Kunci)</h2>
+      <table>
+        <tbody>
+          <tr><th>Seed</th><td><code>{{ summary.avalanche_key.seed }}</code></td></tr>
+          <tr><th>Pasangan &times; Bit Kunci</th><td>{{ summary.avalanche_key.pairs }} &times; 128 = {{ summary.avalanche_key.trials }} percobaan</td></tr>
+          <tr><th>Rata-Rata Perubahan Bit (Jarak Hamming)</th><td><strong>{{ summary.avalanche_key.mean_pct }}%</strong> ({{ summary.avalanche_key.mean_bits }} / 128 bit)</td></tr>
+          <tr><th>Simpangan Baku</th><td>{{ summary.avalanche_key.std_pct }}%</td></tr>
+          <tr><th>Minimum / Maksimum</th><td>{{ summary.avalanche_key.min_pct }}% / {{ summary.avalanche_key.max_pct }}%</td></tr>
+        </tbody>
+      </table>
+    </section>
+    {% endif %}
+  </div>
+
+  {% if summary.sac %}
+  <section class="card">
+    <h2>Kriteria Avalanche Ketat (SAC) Empiris</h2>
+    <table>
+      <tbody>
+        <tr><th>Seed</th><td><code>{{ summary.sac.seed }}</code></td></tr>
+        <tr><th>Jumlah Sampel per Bit Masukan (N)</th><td>{{ summary.sac.samples }}</td></tr>
+        <tr><th>Rata-Rata |p&#770;<sub>ij</sub> &minus; 0.5|</th><td><strong>{{ summary.sac.mean_abs_dev }}</strong></td></tr>
+        <tr><th>Maksimum |p&#770;<sub>ij</sub> &minus; 0.5|</th><td>{{ summary.sac.max_abs_dev }}</td></tr>
+        <tr><th>Galat Baku Binomial pada p=0.5</th><td>&plusmn;{{ summary.sac.binomial_se }}</td></tr>
+      </tbody>
+    </table>
+  </section>
+  {% endif %}
+
+  {% if summary.benchmark %}
+  <section class="card">
+    <h2>Perbandingan Waktu Eksekusi Primitif (Python Murni)</h2>
+    <p class="muted">
+      Lingkungan pengukuran: Python {{ summary.benchmark.environment.python_version }} pada {{ summary.benchmark.environment.platform }}
+      (seed: <code>{{ summary.benchmark.seed }}</code>, batch: {{ summary.benchmark.batches }} &times; {{ summary.benchmark.iterations_per_batch }} iterasi).
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Operasi</th>
+          <th>Median Waktu (mikrodetik/op)</th>
+          <th>Rata-Rata Waktu (mikrodetik/op)</th>
+          <th>Persentil ke-95 (mikrodetik/op)</th>
+          <th>Throughput (op/detik)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for op in summary.benchmark.operations %}
+        <tr>
+          <td><code>{{ op.name }}</code></td>
+          <td>{{ op.median_us }}</td>
+          <td>{{ op.mean_us }}</td>
+          <td>{{ op.p95_us }}</td>
+          <td>{{ op.ops_per_sec }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+  {% endif %}
+
+  {% if plots %}
+  <section class="card">
+    <h2>Grafik Hasil Eksperimen</h2>
+    <div class="grid-2">
+      {% for plot in plots %}
+      <div>
+        <h3>{{ plot.title }}</h3>
+        <img class="plot-img" src="/experiments/plots/{{ plot.filename }}" alt="{{ plot.alt }}">
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+{% else %}
+  <section class="card">
+    <div class="alert alert-info">
+      Data dan grafik eksperimen belum tersedia. Jalankan skrip eksperimen di bawah direktori <code>experiments/</code> untuk menghasilkan berkas CSV/JSON dan grafik PNG.
+    </div>
+  </section>
+{% endif %}
+{% endblock %}

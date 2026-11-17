@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Beranda &mdash; Demonstrasi Enkripsi CLEFIA-128{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>Demonstrasi Enkripsi CLEFIA-128</h1>
+  <p>
+    Implementasi murni bahasa Python untuk cipher blok <strong>CLEFIA-128</strong> (Spesifikasi Sony v1.0 / RFC 6114)
+    yang terverifikasi terhadap vektor uji resmi, dilengkapi eksperimen efek avalanche, kriteria avalanche ketat (SAC),
+    pengukuran waktu eksekusi, serta aplikasi demonstrasi berbasis web.
+  </p>
+
+  <div class="alert alert-info" role="note">
+    <strong>Keterbatasan Penting &amp; Peringatan Akademis:</strong>
+    Aplikasi ini hanya untuk demonstrasi akademis algoritma CLEFIA-128. Gunakan data simulasi, bukan nama pengguna atau kata sandi asli.
+    Enkripsi dalam mode CTR tanpa pemeriksaan autentikasi (tanpa MAC/HMAC) tidak dapat menjamin bahwa data terenkripsi tidak diubah, dan kata sandi terenkripsi bersifat reversibel di server.
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Referensi Matematis &amp; Eksperimen</h2>
+      <ul>
+        <li><a href="/math">Penjelasan Matematika CLEFIA &amp; Verifikasi Vektor RFC 6114</a></li>
+        <li><a href="/experiments">Hasil Eksperimen Efek Avalanche, SAC &amp; Waktu Eksekusi</a></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Alur Demonstrasi Data Terenkripsi</h2>
+      {% if current_user %}
+        <p>Masuk sebagai <strong>{{ current_user.username }}</strong>.</p>
+        <ul>
+          <li><a href="/dashboard">Dasbor &amp; Ringkasan Enkripsi</a></li>
+          <li><a href="/credentials">Data Terenkripsi (Ciphertext &amp; Nonce)</a></li>
+          <li><a href="/profile">Catatan Profil Terenkripsi</a></li>
+          <li><a href="/change-password">Ubah Kata Sandi Simulasi</a></li>
+        </ul>
+      {% else %}
+        <p>Buat akun simulasi atau masuk untuk melihat enkripsi CLEFIA-128-CTR dengan pemindaian dekripsi (<em>decrypt-and-scan</em>).</p>
+        <p>
+          <a class="btn" href="/register">Buat Akun Simulasi</a>
+          <a class="btn btn-secondary" href="/login">Masuk</a>
+        </p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

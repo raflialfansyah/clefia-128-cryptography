@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Matematika CLEFIA &mdash; Demonstrasi Enkripsi CLEFIA-128{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>Matematika CLEFIA-128</h1>
+  <p>
+    Diimplementasikan secara murni dengan Python berdasarkan spesifikasi resmi Sony <em>The 128-bit Blockcipher CLEFIA</em> (v1.0)
+    dan <strong>IETF RFC 6114</strong>. CLEFIA-128 memproses blok 128-bit (empat kata big-endian 32-bit)
+    dengan kunci 128-bit melalui <strong>Putaran Enkripsi</strong> sebanyak 18 putaran pada arsitektur Feistel tergeneralisasi empat cabang (GFN<sub>4,18</sub>).
+  </p>
+  <div class="grid-2">
+    <div>
+      <h2>1. Perkalian pada GF(2<sup>8</sup>) &amp; Matriks Difusi</h2>
+      <ul>
+        <li><strong>Perkalian pada GF(2<sup>8</sup>):</strong> aritmetika polinomial modulo <code>z^8 + z^4 + z^3 + z^2 + 1</code> (<code>0x11D</code>) dalam urutan MSB-pertama.</li>
+        <li>Aritmetika konstanta kunci pada <strong>GF(2<sup>16</sup>)</strong> modulo <code>0x1A831</code>.</li>
+        <li>Dua matriks MDS involutif 4&times;4 bernama <code>M0</code> dan <code>M1</code> pada GF(2<sup>8</sup>) dengan <em>branch number</em> bernilai 5.</li>
+      </ul>
+    </div>
+    <div>
+      <h2>2. Substitusi S-box, Struktur Jaringan Feistel &amp; Penjadwalan Kunci</h2>
+      <ul>
+        <li><strong>Substitusi S-box:</strong> dua permutasi tak-linier bijektif 8-bit <code>S0</code> dan <code>S1</code> dari RFC 6114 Tabel 1 &amp; 2.</li>
+        <li><strong>Struktur Jaringan Feistel:</strong> fungsi putaran <code>F0</code> menerapkan <code>(S0, S1, S0, S1)</code> lalu <code>M0</code>; <code>F1</code> menerapkan <code>(S1, S0, S1, S0)</code> lalu <code>M1</code> dalam jaringan GFN<sub>4,18</sub>.</li>
+        <li><strong>Penjadwalan Kunci:</strong> menghitung kunci antara <code>L</code> melalui GFN<sub>4,12</sub> serta memperluas 4 kunci pemutihan (<em>whitening</em>) <code>WK0..WK3</code> dan 36 kunci putaran <code>RK0..RK35</code> menggunakan permutasi bit <code>DoubleSwap (&Sigma;)</code>.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Verifikasi Langsung Vektor Uji Publik Resmi RFC 6114</h2>
+  <p class="muted">
+    Dihitung langsung oleh modul <code>src/clefia/</code> menggunakan vektor uji publik tetap dari RFC 6114 Lampiran A &amp; B (tanpa menyentuh kunci rahasia aplikasi).
+  </p>
+  <table>
+    <tbody>
+      <tr><th>Kunci Uji Publik (RFC 6114)</th><td class="mono">{{ sample.key_hex }}</td></tr>
+      <tr><th>Plaintext Uji Publik</th><td class="mono">{{ sample.plaintext_hex }}</td></tr>
+      <tr><th>Kunci Antara L (Intermediate L)</th><td class="mono">{{ sample.intermediate_l_hex }}</td></tr>
+      <tr><th>Kunci Pemutihan WK0..WK3</th><td class="mono">{{ sample.wk_hex }}</td></tr>
+      <tr><th>Kunci Putaran Awal RK0..RK3</th><td class="mono">{{ sample.rk_first_hex }}</td></tr>
+      <tr><th>Kunci Putaran Akhir RK32..RK35</th><td class="mono">{{ sample.rk_last_hex }}</td></tr>
+      <tr><th>Ciphertext Hasil Hitungan</th><td class="mono"><strong>{{ sample.ciphertext_hex }}</strong></td></tr>
+      <tr><th>Ciphertext Rujukan Resmi RFC 6114</th><td class="mono">{{ sample.expected_ciphertext_hex }}</td></tr>
+      <tr><th>Status Pencocokan</th><td>{% if sample.matches %}<strong>Berhasil &mdash; Cocok Persis</strong>{% else %}Gagal &mdash; Tidak Cocok{% endif %}</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Jejak Putaran Enkripsi Terpilih pada GFN<sub>4,18</sub></h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Putaran</th>
+        <th>Kata Masukan (T0, T1, T2, T3)</th>
+        <th>RK<sub>2i</sub> / RK<sub>2i+1</sub></th>
+        <th>Keluaran F0 / Keluaran F1</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for rt in sample.selected_rounds %}
+      <tr>
+        <td>{{ rt.round_number }}</td>
+        <td class="mono">{{ rt.input_hex }}</td>
+        <td class="mono">{{ rt.rk_hex }}</td>
+        <td class="mono">{{ rt.f_out_hex }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="card">
+  <h2>Mode CTR dan Batasan Pengukuran Efek Avalanche</h2>
+  <p>
+    Untuk teks dengan panjang bervariasi, aplikasi membungkus blok 128-bit ke dalam mode Counter (CTR) dengan nonce acak 96-bit dan pencacah big-endian 32-bit mulai dari <code>1</code>.
+    Pengujian <strong>Efek Avalanche</strong> (~50% bit berubah) dan <strong>SAC</strong> menunjukkan properti difusi empiris cipher blok, namun <strong>bukan</strong> bukti matematis ketahanan terhadap seluruh serangan kriptanalitik.
+  </p>
+</section>
+{% endblock %}

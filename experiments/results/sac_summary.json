@@ -1,0 +1,9 @@
+{
+  "generated_at_utc": "2026-11-17T06:26:17.353443+00:00",
+  "seed": 20261115,
+  "samples": 64,
+  "matrix_entries": 16384,
+  "mean_abs_deviation_from_0_5": 0.049363,
+  "max_abs_deviation_from_0_5": 0.25,
+  "binomial_standard_error_at_0_5": 0.0625
+}

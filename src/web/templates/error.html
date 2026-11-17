@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}{{ error_title }} ({{ status_code }}) &mdash; Demonstrasi Enkripsi CLEFIA-128{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>{{ error_title }} ({{ status_code }})</h1>
+  <div class="alert alert-error" role="alert">
+    {{ error_message }}
+  </div>
+  <p>
+    <a class="btn" href="/">Kembali ke Beranda</a>
+    {% if status_code == 401 %}
+      <a class="btn btn-secondary" href="/login">Masuk ke Akun</a>
+    {% endif %}
+  </p>
+</section>
+{% endblock %}

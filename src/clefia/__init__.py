@@ -1,0 +1,121 @@
+"""Pure-Python CLEFIA-128 block cipher and CTR record wrapper package.
+
+This package intentionally has no web-framework or database dependencies so that
+mathematical primitives and tests remain self-contained and verifiable.
+"""
+
+from clefia.cipher import (
+    BLOCK_SIZE,
+    KEY_SIZE,
+    ROUNDS_128,
+    EncryptionTrace,
+    RoundTrace,
+    decrypt_block,
+    decrypt_block_with_schedule,
+    encrypt_block,
+    encrypt_block_with_schedule,
+    trace_encrypt_block,
+)
+from clefia.constants import CON_128, IV_128, P_16, Q_16, T_128, generate_con_128, generate_t_128
+from clefia.field import (
+    GF8_MODULUS,
+    GF16_MODULUS,
+    M0,
+    M1,
+    gf_inv16,
+    gf_mul8,
+    gf_mul16,
+    mul_m0,
+    mul_m1,
+)
+from clefia.functions import (
+    F0,
+    F1,
+    bytes_to_word,
+    bytes_to_words128,
+    double_swap,
+    double_swap_words,
+    int128_to_words,
+    word_to_bytes,
+    words128_to_bytes,
+    words_to_int128,
+)
+from clefia.gfn import gfn4, gfn4_inv
+from clefia.key_schedule import KeySchedule128, derive_intermediate_l, key_schedule_128
+from clefia.record_crypto import (
+    ALGORITHM_VERSION,
+    MAX_CTR_COUNTER,
+    NONCE_SIZE,
+    ClefiaKeyConfig,
+    ClefiaRecordService,
+    CounterOverflowError,
+    EncryptedField,
+    InvalidRecordFormatError,
+    KeyConfigurationError,
+    RecordCryptoError,
+    RecordDecodeError,
+    clefia_ctr_crypt,
+)
+from clefia.sboxes import S0, S1, s0, s1
+
+__version__ = "0.2.0"
+
+__all__ = [
+    "ALGORITHM_VERSION",
+    "BLOCK_SIZE",
+    "CON_128",
+    "F0",
+    "F1",
+    "GF8_MODULUS",
+    "GF16_MODULUS",
+    "IV_128",
+    "KEY_SIZE",
+    "M0",
+    "M1",
+    "MAX_CTR_COUNTER",
+    "NONCE_SIZE",
+    "P_16",
+    "Q_16",
+    "ROUNDS_128",
+    "S0",
+    "S1",
+    "T_128",
+    "ClefiaKeyConfig",
+    "ClefiaRecordService",
+    "CounterOverflowError",
+    "EncryptedField",
+    "EncryptionTrace",
+    "InvalidRecordFormatError",
+    "KeyConfigurationError",
+    "KeySchedule128",
+    "RecordCryptoError",
+    "RecordDecodeError",
+    "RoundTrace",
+    "bytes_to_word",
+    "bytes_to_words128",
+    "clefia_ctr_crypt",
+    "decrypt_block",
+    "decrypt_block_with_schedule",
+    "derive_intermediate_l",
+    "double_swap",
+    "double_swap_words",
+    "encrypt_block",
+    "encrypt_block_with_schedule",
+    "generate_con_128",
+    "generate_t_128",
+    "gf_inv16",
+    "gf_mul8",
+    "gf_mul16",
+    "gfn4",
+    "gfn4_inv",
+    "int128_to_words",
+    "key_schedule_128",
+    "mul_m0",
+    "mul_m1",
+    "s0",
+    "s1",
+    "trace_encrypt_block",
+    "word_to_bytes",
+    "words128_to_bytes",
+    "words_to_int128",
+]

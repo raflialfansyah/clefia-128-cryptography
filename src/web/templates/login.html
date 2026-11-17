@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Masuk ke Akun &mdash; Demonstrasi Enkripsi CLEFIA-128{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>Masuk ke Akun</h1>
+  <p class="muted">
+    Proses masuk menggunakan metode pemindaian dekripsi (<em>Approach A: decrypt-and-scan</em>): server mendekripsi baris nama pengguna terenkripsi satu per satu memakai CLEFIA-128-CTR hingga menemukan kecocokan kanonik, lalu mendekripsi sementara kata sandi pemilik tersebut untuk dibandingkan di memori server.
+  </p>
+
+  {% if registered %}
+    <div class="alert alert-success" role="status">
+      Berhasil: akun simulasi dibuat dan nama pengguna serta kata sandi disimpan dalam bentuk ciphertext CLEFIA-128-CTR. Silakan masuk.
+    </div>
+  {% endif %}
+  {% if logged_out %}
+    <div class="alert alert-info" role="status">
+      Anda telah keluar dari akun.
+    </div>
+  {% endif %}
+  {% if error %}
+    <div class="alert alert-error" role="alert">{{ error }}</div>
+  {% endif %}
+
+  <form method="post" action="/login">
+    <input type="hidden" name="csrf_token" value="{{ preauth_csrf_token }}">
+
+    <label for="username">Nama pengguna</label>
+    <input id="username" name="username" type="text" value="{{ username }}" required autocomplete="username" placeholder="Nama pengguna simulasi">
+
+    <label for="password">Kata sandi</label>
+    <input id="password" name="password" type="password" required autocomplete="current-password" placeholder="Kata sandi simulasi">
+
+    <button type="submit" class="btn">Masuk</button>
+  </form>
+
+  <p class="muted">Belum punya akun simulasi? <a href="/register">Daftar di sini</a>.</p>
+</section>
+{% endblock %}
